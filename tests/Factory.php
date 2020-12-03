@@ -67,13 +67,12 @@ class Factory
         }
 
         $accessToken = (new Builder())
-            ->setIssuedAt(time())
-            ->setNotBefore(time())
-            ->setExpiration(time() + 3600)
-            ->set('urn:esia:sbj_id', 1)
-            ->set('scope', 'one?oid=123 two?oid=456 three?oid=789')
-            ->sign($signer, new Key(file_get_contents($privateKeyPath)))
-            ->getToken();
+            ->issuedAt(new \DateTimeImmutable())
+            ->canOnlyBeUsedAfter(new \DateTimeImmutable())
+            ->expiresAt((new \DateTimeImmutable())->add(new \DateInterval('PT1H')))
+            ->withClaim('urn:esia:sbj_id', 1)
+            ->withClaim('scope', 'one?oid=123 two?oid=456 three?oid=789')
+            ->getToken($signer, new Key(file_get_contents($privateKeyPath)));
 
         return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
     }

@@ -16,6 +16,8 @@ class Process
      */
     public function __construct($command, $input)
     {
+        var_dump($command, $input);
+
         $pipes = [];
         $process = proc_open($command, [
             ['pipe', 'r'], // stdin
